@@ -1,3 +1,14 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": [
+    "alloy",
+    "alloy/react",
+    "alloy/typescript"
+  ],
+  "env": {
+  },
+  "globals": {
+    "JSX": true
+  },
+  "rules": {
+  }
 }
