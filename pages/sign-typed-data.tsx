@@ -14,9 +14,6 @@ const SignTypedData = () => {
   //   const { client } = useClient();
   const { chain } = useNetwork();
   const { signTypedDataAsync } = useSignTypedData();
-  if (!chain || !address) {
-    return <Text>Please Connect Your Wallet</Text>;
-  }
 
   const form = useForm({
     initialValues: {

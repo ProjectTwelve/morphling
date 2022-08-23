@@ -1,6 +1,6 @@
 import { useForm } from '@mantine/form';
 import { Select } from '@mantine/core';
-import { useAccount, useNetwork } from 'wagmi';
+import { useAccount, useNetwork, useConnect } from 'wagmi';
 import { ecrevoer } from '../utils/asset';
 import { useState } from 'react';
 import { ethers } from 'ethers';
@@ -13,9 +13,6 @@ const EcRecover = () => {
   const [signer, setSigner] = useState('');
   const [hash, setHash] = useState('');
   const { chain } = useNetwork();
-  if (!chain || !address) {
-    return <Text>Please Connect Your Wallet</Text>;
-  }
 
   const form = useForm({
     initialValues: {
