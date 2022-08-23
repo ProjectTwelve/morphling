@@ -1,5 +1,6 @@
 import { useAccount, useConnect } from 'wagmi';
 import { InjectedConnector } from '@wagmi/core';
+import { Button } from '@mantine/core';
 import { useIsMounted } from '../../hooks/useIsMounted';
 import { shortenAddress } from '../../utils';
 
@@ -14,11 +15,9 @@ export default function Header() {
     <header className="flex items-center justify-between py-4">
       <div>Logo</div>
       {isMounted && isConnected ? (
-        <button className="btn btn-primary">{address && shortenAddress(address)}</button>
+        <Button>{address && shortenAddress(address)}</Button>
       ) : (
-        <button className="btn btn-primary" onClick={() => connect()}>
-          Connect Wallet
-        </button>
+        <Button onClick={() => connect()}>Connect Wallet</Button>
       )}
     </header>
   );
