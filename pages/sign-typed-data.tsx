@@ -14,6 +14,9 @@ const Home = () => {
   //   const { client } = useClient();
   const { chain } = useNetwork();
   const { signTypedDataAsync } = useSignTypedData();
+  if (!chain || !address) {
+    return <Text>Please Connect Your Wallet</Text>;
+  }
 
   const form = useForm({
     initialValues: {
@@ -27,10 +30,9 @@ const Home = () => {
       price: '0',
       salt2: ethers.BigNumber.from(ethers.utils.randomBytes(32))._hex,
       token: ethers.constants.AddressZero,
-      tokenId: 0,
+      tokenId: '0',
       amount: 0,
     },
-    validate: {},
   });
 
   const onSubmit = (data: TSignParams) => {
@@ -58,7 +60,6 @@ const Home = () => {
     <div>
       <div className="indicator">Sign Typed Data</div>
       <form onSubmit={form.onSubmit(onSubmit)}>
-        {/* register your input into the hook by invoking the "register" function */}
         <TextInput label="salt" {...form.getInputProps('salt')} />
         <TextInput label="user" {...form.getInputProps('user')} />
         <TextInput label="chainId" {...form.getInputProps('chainId')} />
