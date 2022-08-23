@@ -59,7 +59,15 @@ const EcRecover = () => {
       <form onSubmit={form.onSubmit(onSubmit)}>
         <TextInput label="salt" {...form.getInputProps('salt')} />
         <TextInput label="user" {...form.getInputProps('user')} />
-        <TextInput label="chainId" {...form.getInputProps('chainId')} />
+        <Select
+          label="chainId"
+          placeholder="chainId"
+          {...form.getInputProps('chainId')}
+          data={[
+            { value: 4, label: 'Rinkeby(4)' },
+            { value: 44010, label: 'p12TestNet(44010)' },
+          ]}
+        />
         <Select
           label="intent"
           placeholder="intent"
@@ -85,7 +93,6 @@ const EcRecover = () => {
         <TextInput label="tokenId" {...form.getInputProps('tokenId')} />
         <TextInput label="amount" {...form.getInputProps('amount')} />
         <TextInput label="sig" {...form.getInputProps('sig')} />
-
         <Button type="submit">EcRecover</Button>
       </form>
 
