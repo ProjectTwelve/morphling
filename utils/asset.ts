@@ -3,6 +3,7 @@ import { parseEther } from '@ethersproject/units';
 import { defaultAbiCoder, ParamType } from '@ethersproject/abi';
 import { SECRET_SHOP_ADDRESS, P12_TOKEN_ADDRESS } from '../utils/constant';
 import { keccak256 } from '@ethersproject/keccak256';
+import { verifyMessage, _TypedDataEncoder } from 'ethers/lib/utils';
 
 export type TSignParams = {
   salt: string;
@@ -35,6 +36,15 @@ export const EIP712Type = {
     { name: 'items', type: 'OrderItem[]' },
   ],
 };
+
+export function ecrevoer(params: TSignParams, sig: string): string {
+  const [, signData] = getSignData(params);
+
+  const hash = _TypedDataEncoder.encode(signData.domain, signData.types, signData.value);
+  const signer = verifyMessage(hash, sig);
+
+  return signer;
+}
 
 /**
  *
