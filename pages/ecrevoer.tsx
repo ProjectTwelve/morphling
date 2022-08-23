@@ -1,19 +1,17 @@
 import { useForm } from '@mantine/form';
 import { Select } from '@mantine/core';
-import { useAccount, useNetwork, chainId, useSwitchNetwork, useSignTypedData } from 'wagmi';
-import { getSignData, TSignParams } from '../utils/asset';
+import { useAccount, useNetwork } from 'wagmi';
+import { ecrevoer  } from '../utils/asset';
 import { useState } from 'react';
 import { ethers } from 'ethers';
 
 import { TextInput, Button, Text } from '@mantine/core';
 import { P12_TOKEN_ADDRESS } from '../utils/constant';
 
-const SignTypedData = () => {
-  const { address, isConnected } = useAccount();
-  const [sig, setSig] = useState('');
-  //   const { client } = useClient();
+const EcRecover = () => {
+  const { address } = useAccount();
+  const [signer, setSigner] = useState('');
   const { chain } = useNetwork();
-  const { signTypedDataAsync } = useSignTypedData();
   if (!chain || !address) {
     return <Text>Please Connect Your Wallet</Text>;
   }
@@ -35,8 +33,7 @@ const SignTypedData = () => {
     },
   });
 
-  const onSubmit = (data: TSignParams) => {
-    console.log(data);
+  const onSubmit = (data: any) => {
     const signParams = {
       salt: data.salt,
       user: data.user,
@@ -50,15 +47,14 @@ const SignTypedData = () => {
       price: data.price,
       amount: data.amount,
     };
-    const [itemHash, signData] = getSignData(signParams);
 
-    signTypedDataAsync(signData).then((sig) => {
-      setSig(sig);
-    });
+    const signer = ecrevoer(signParams, data.sig);
+
+    setSigner(signer);
   };
   return (
     <div>
-      <div className="indicator">Sign Typed Data</div>
+      <div className="indicator">Ecrecover</div>
       <form onSubmit={form.onSubmit(onSubmit)}>
         <TextInput label="salt" {...form.getInputProps('salt')} />
         <TextInput label="user" {...form.getInputProps('user')} />
@@ -87,13 +83,14 @@ const SignTypedData = () => {
         <TextInput label="token" {...form.getInputProps('token')} />
         <TextInput label="tokenId" {...form.getInputProps('tokenId')} />
         <TextInput label="amount" {...form.getInputProps('amount')} />
+        <TextInput label="sig" {...form.getInputProps('sig')} />
 
-        <Button type="submit">Sign</Button>
+        <Button type="submit">EcRecover</Button>
       </form>
 
-      <Text>Your Signature: {sig}</Text>
+      <Text>Signer address: {signer}</Text>
     </div>
   );
 };
 
-export default SignTypedData;
+export default EcRecover;
