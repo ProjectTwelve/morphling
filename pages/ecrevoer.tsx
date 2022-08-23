@@ -1,7 +1,7 @@
 import { useForm } from '@mantine/form';
 import { Select } from '@mantine/core';
 import { useAccount, useNetwork } from 'wagmi';
-import { ecrevoer  } from '../utils/asset';
+import { ecrevoer } from '../utils/asset';
 import { useState } from 'react';
 import { ethers } from 'ethers';
 
@@ -11,6 +11,7 @@ import { P12_TOKEN_ADDRESS } from '../utils/constant';
 const EcRecover = () => {
   const { address } = useAccount();
   const [signer, setSigner] = useState('');
+  const [hash, setHash] = useState('');
   const { chain } = useNetwork();
   if (!chain || !address) {
     return <Text>Please Connect Your Wallet</Text>;
@@ -48,8 +49,8 @@ const EcRecover = () => {
       amount: data.amount,
     };
 
-    const signer = ecrevoer(signParams, data.sig);
-
+    const [signer, hash] = ecrevoer(signParams, data.sig);
+    setHash(hash);
     setSigner(signer);
   };
   return (
@@ -88,6 +89,7 @@ const EcRecover = () => {
         <Button type="submit">EcRecover</Button>
       </form>
 
+      <Text>Typed Data Hash: {hash}</Text>
       <Text>Signer address: {signer}</Text>
     </div>
   );

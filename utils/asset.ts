@@ -3,7 +3,7 @@ import { parseEther } from '@ethersproject/units';
 import { defaultAbiCoder, ParamType } from '@ethersproject/abi';
 import { SECRET_SHOP_ADDRESS, P12_TOKEN_ADDRESS } from '../utils/constant';
 import { keccak256 } from '@ethersproject/keccak256';
-import { verifyMessage, _TypedDataEncoder } from 'ethers/lib/utils';
+import { hexConcat, verifyTypedData, _TypedDataEncoder } from 'ethers/lib/utils';
 
 export type TSignParams = {
   salt: string;
@@ -20,10 +20,6 @@ export type TSignParams = {
 };
 
 export const EIP712Type = {
-  OrderItem: [
-    { name: 'price', type: 'uint256' },
-    { name: 'data', type: 'bytes' },
-  ],
   Order: [
     { name: 'salt', type: 'uint256' },
     { name: 'user', type: 'address' },
@@ -35,15 +31,28 @@ export const EIP712Type = {
     { name: 'length', type: 'uint256' },
     { name: 'items', type: 'OrderItem[]' },
   ],
+  OrderItem: [
+    { name: 'price', type: 'uint256' },
+    { name: 'data', type: 'bytes' },
+  ],
 };
 
-export function ecrevoer(params: TSignParams, sig: string): string {
+export function ecrevoer(params: TSignParams, sig: string): [string, string] {
   const [, signData] = getSignData(params);
 
-  const hash = _TypedDataEncoder.encode(signData.domain, signData.types, signData.value);
-  const signer = verifyMessage(hash, sig);
+  const msg = hexConcat([
+    '0x1901',
+    _TypedDataEncoder.hashDomain(signData.domain),
+    _TypedDataEncoder.from(signData.types).hash(signData.value),
+  ]);
 
-  return signer;
+  // const hash = keccak256(msg);
+  const hash = _TypedDataEncoder.hash(signData.domain, signData.types, signData.value);
+
+  const signer = verifyTypedData(signData.domain, signData.types, signData.value, sig);
+  // const signer = verifyMessage(hash, sig);
+
+  return [signer, hash];
 }
 
 /**
