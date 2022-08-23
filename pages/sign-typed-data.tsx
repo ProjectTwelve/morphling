@@ -8,7 +8,7 @@ import { ethers } from 'ethers';
 import { TextInput, Button, Text } from '@mantine/core';
 import { P12_TOKEN_ADDRESS } from '../utils/constant';
 
-const Home = () => {
+const SignTypedData = () => {
   const { address, isConnected } = useAccount();
   const [sig, setSig] = useState('');
   //   const { client } = useClient();
@@ -68,11 +68,18 @@ const Home = () => {
           placeholder="intent"
           {...form.getInputProps('intent')}
           data={[
-            { value: 1, label: 'Buy' },
-            { value: 2, label: 'Sell' },
+            { value: 1, label: 'Sell' },
+            { value: 2, label: 'Buy' },
           ]}
         />
-        <Select label="delegateType" {...form.getInputProps('delegateType')} data={[{ value: 1, label: 'ERC1155' }]} />
+        <Select
+          label="delegateType"
+          {...form.getInputProps('delegateType')}
+          data={[
+            { value: 1, label: 'ERC1155' },
+            { value: 2, label: 'ERC1155' },
+          ]}
+        />
         <TextInput label="deadline" {...form.getInputProps('deadline')} />
         <TextInput label="currency" {...form.getInputProps('currency')} />
         <TextInput label="price" {...form.getInputProps('price')} />
@@ -89,4 +96,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default SignTypedData;
