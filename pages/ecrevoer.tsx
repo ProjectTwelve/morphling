@@ -2,16 +2,24 @@ import { useForm } from '@mantine/form';
 import { Select } from '@mantine/core';
 import { useAccount, useNetwork, useConnect } from 'wagmi';
 import { ecrevoer } from '../utils/asset';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocalStorage } from 'react-use';
+
 import { ethers } from 'ethers';
 
 import { TextInput, Button, Text } from '@mantine/core';
 import { P12_TOKEN_ADDRESS } from '../utils/constant';
 
 const EcRecover = () => {
-  const { address } = useAccount();
+  const { address } = useAccount({
+    // onConnect({ address, connector, isReconnected }) {
+    //   console.log('Connected', { address, connector, isReconnected });
+    // },
+  });
+
   const [signer, setSigner] = useState('');
   const [hash, setHash] = useState('');
+  const [formValue, setFormValue] = useLocalStorage<string>('user-form');
   const { chain } = useNetwork();
 
   const form = useForm({
@@ -28,8 +36,23 @@ const EcRecover = () => {
       token: ethers.constants.AddressZero,
       tokenId: '0',
       amount: 0,
+      sig: '',
     },
   });
+
+  useEffect(() => {
+    if (formValue) {
+      try {
+        form.setValues(JSON.parse(formValue));
+      } catch (e) {
+        console.log('Failed to parse stored value');
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    setFormValue(JSON.stringify(form.values));
+  }, [form.values]);
 
   const onSubmit = (data: any) => {
     const signParams = {
