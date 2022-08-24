@@ -5,7 +5,7 @@ import { SECRET_SHOP_ADDRESS, P12_TOKEN_ADDRESS } from '../utils/constant';
 import { keccak256 } from '@ethersproject/keccak256';
 import { hexConcat, verifyTypedData, _TypedDataEncoder } from 'ethers/lib/utils';
 
-export type TSignParams = {
+export interface TSignParams {
   salt: string;
   user: string;
   chainId: number;
@@ -13,11 +13,13 @@ export type TSignParams = {
   delegateType: number;
   deadline: number;
   currency: string;
+  salt2: string;
   token: string;
   tokenId: string;
   price: string;
   amount: number;
-};
+  sig: string;
+}
 
 export const EIP712Type = {
   Order: [
@@ -37,20 +39,12 @@ export const EIP712Type = {
   ],
 };
 
-export function ecrevoer(params: TSignParams, sig: string): [string, string] {
+export function ecrecover(params: TSignParams): [string, string] {
   const [, signData] = getSignData(params);
 
-  const msg = hexConcat([
-    '0x1901',
-    _TypedDataEncoder.hashDomain(signData.domain),
-    _TypedDataEncoder.from(signData.types).hash(signData.value),
-  ]);
-
-  // const hash = keccak256(msg);
   const hash = _TypedDataEncoder.hash(signData.domain, signData.types, signData.value);
 
-  const signer = verifyTypedData(signData.domain, signData.types, signData.value, sig);
-  // const signer = verifyMessage(hash, sig);
+  const signer = verifyTypedData(signData.domain, signData.types, signData.value, params.sig);
 
   return [signer, hash];
 }
@@ -78,6 +72,7 @@ export const getSignData = (params: TSignParams): [string, SignTypedDataArgs] =>
     chainId: params.chainId,
     verifyingContract: SECRET_SHOP_ADDRESS[params.chainId],
   };
+
   const orderPreInfo = {
     salt: params.salt,
     user: params.user,

@@ -4,7 +4,7 @@ const Home = () => {
   return (
     <div>
       <Link href="sign-typed-data">Sign Typed Data</Link>
-      <Link href="ecrevoer">Ecrevoer</Link>
+      <Link href="ecrecover">ecrecover</Link>
     </div>
   );
 };

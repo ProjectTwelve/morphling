@@ -1,7 +1,7 @@
 import { useForm } from '@mantine/form';
-import { Select } from '@mantine/core';
+import { Code, Select, Grid, JsonInput } from '@mantine/core';
 import { useAccount, useNetwork, useConnect } from 'wagmi';
-import { ecrevoer } from '../utils/asset';
+import { ecrecover, TSignParams } from '../utils/asset';
 import { useState, useEffect } from 'react';
 import { useLocalStorage } from 'react-use';
 
@@ -11,26 +11,22 @@ import { TextInput, Button, Text } from '@mantine/core';
 import { P12_TOKEN_ADDRESS } from '../utils/constant';
 
 const EcRecover = () => {
-  const { address } = useAccount({
-    // onConnect({ address, connector, isReconnected }) {
-    //   console.log('Connected', { address, connector, isReconnected });
-    // },
-  });
+  const { address } = useAccount();
+  const { chain } = useNetwork();
 
   const [signer, setSigner] = useState('');
   const [hash, setHash] = useState('');
   const [formValue, setFormValue] = useLocalStorage<string>('user-form');
-  const { chain } = useNetwork();
 
-  const form = useForm({
+  const form = useForm<TSignParams>({
     initialValues: {
       salt: ethers.BigNumber.from(ethers.utils.randomBytes(32))._hex,
-      user: address,
-      chainId: chain?.id,
+      user: address || '',
+      chainId: chain?.id || 0,
       intent: 1,
       delegateType: 1,
       deadline: Math.round(new Date().getTime() / 1000),
-      currency: chain && P12_TOKEN_ADDRESS[chain.id],
+      currency: (chain && P12_TOKEN_ADDRESS[chain.id]) || '',
       price: '0',
       salt2: ethers.BigNumber.from(ethers.utils.randomBytes(32))._hex,
       token: ethers.constants.AddressZero,
@@ -39,6 +35,14 @@ const EcRecover = () => {
       sig: '',
     },
   });
+
+  useEffect(() => {
+    form.setFieldValue('user', address || '');
+  }, [address]);
+
+  useEffect(() => {
+    form.setFieldValue('chainId', chain?.id || 0);
+  }, [chain]);
 
   useEffect(() => {
     if (formValue) {
@@ -54,32 +58,20 @@ const EcRecover = () => {
     setFormValue(JSON.stringify(form.values));
   }, [form.values]);
 
-  const onSubmit = (data: any) => {
-    const signParams = {
-      salt: data.salt,
-      user: data.user,
-      chainId: data.chainId,
-      delegateType: data.delegateType,
-      intent: data.intent,
-      deadline: data.deadline,
-      currency: data.currency,
-      token: data.token,
-      tokenId: data.tokenId,
-      price: data.price,
-      amount: data.amount,
-    };
-
-    const [signer, hash] = ecrevoer(signParams, data.sig);
+  const onSubmit = (form: TSignParams) => {
+    const [signer, hash] = ecrecover(form);
     setHash(hash);
     setSigner(signer);
   };
   return (
     <div>
       <div className="indicator">Ecrecover</div>
+
       <form onSubmit={form.onSubmit(onSubmit)}>
         <TextInput label="salt" {...form.getInputProps('salt')} />
         <TextInput label="user" {...form.getInputProps('user')} />
         <Select
+          className="inline-block"
           label="chainId"
           placeholder="chainId"
           {...form.getInputProps('chainId')}
@@ -89,6 +81,7 @@ const EcRecover = () => {
           ]}
         />
         <Select
+          className="inline-block"
           label="intent"
           placeholder="intent"
           {...form.getInputProps('intent')}
@@ -98,6 +91,7 @@ const EcRecover = () => {
           ]}
         />
         <Select
+          className="inline-block"
           label="delegateType"
           {...form.getInputProps('delegateType')}
           data={[
@@ -113,8 +107,22 @@ const EcRecover = () => {
         <TextInput label="tokenId" {...form.getInputProps('tokenId')} />
         <TextInput label="amount" {...form.getInputProps('amount')} />
         <TextInput label="sig" {...form.getInputProps('sig')} />
+
         <Button type="submit">EcRecover</Button>
       </form>
+
+      <Text size="sm" weight={500} mt="xl">
+        Form values:
+      </Text>
+      <JsonInput
+        mt={5}
+        value={JSON.stringify(form.values, null, 2)}
+        autosize
+        formatOnBlur
+        onChange={(data) => {
+          form.setValues(JSON.parse(data));
+        }}
+      />
 
       <Text>Typed Data Hash: {hash}</Text>
       <Text>Signer address: {signer}</Text>
