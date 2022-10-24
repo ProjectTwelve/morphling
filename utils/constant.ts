@@ -3,7 +3,7 @@ import { CHAIN_ID } from './enum';
 
 export const RPC_URL: { [chainId: number]: string } = {
   [CHAIN_ID.P12TEST]: 'https://testnet.p12.games',
-  [CHAIN_ID.GOERLI]: chain.goerli.rpcUrls.default,
+  [CHAIN_ID.GOERLI]: 'https://eth-goerli.g.alchemy.com/v2/Ya91XCrGV85JPViGL0vURxQq4BWEAQsF',
 };
 
 export const BROWSER_URL: { [chainId: number]: string } = {

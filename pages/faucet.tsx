@@ -20,11 +20,15 @@ const Faucet = () => {
   const requestFaucet = async (chainId: number, tokenAddr: string) => {
     setLoading(true);
     try {
-      const res = await axios.post('/api/faucet', {
-        address: address,
-        chainId: chainId,
-        tokenAddr: tokenAddr,
-      });
+      const res = await axios.post(
+        '/api/faucet',
+        {
+          address: address,
+          chainId: chainId,
+          tokenAddr: tokenAddr,
+        },
+        { timeout: 10000 },
+      );
       setTxHash(res?.data?.txHash);
     } catch (e) {
       alert('request fail');
