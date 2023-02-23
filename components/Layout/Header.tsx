@@ -25,6 +25,9 @@ export default function Header() {
         <div className="mx-4 cursor-pointer text-white hover:text-white">
           <Link href="faucet">Faucet</Link>
         </div>
+        <div className="mx-4 cursor-pointer text-white hover:text-white">
+          <Link href="sendTx">SendTx</Link>
+        </div>
       </div>
       {isMounted && isConnected ? (
         <Button>{address && shortenAddress(address)}</Button>
