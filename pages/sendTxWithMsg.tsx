@@ -2,11 +2,8 @@ import { useForm } from '@mantine/form';
 import { useSigner } from 'wagmi';
 import { useEffect } from 'react';
 import { useLocalStorage } from 'react-use';
-import { TransactionRequest } from '@ethersproject/providers';
-
-import { BigNumberish, ethers, UnsignedTransaction } from 'ethers';
-
-import { TextInput, Button, Text } from '@mantine/core';
+import { ethers } from 'ethers';
+import { TextInput, Button } from '@mantine/core';
 
 const EcRecover = () => {
   const { data: signer } = useSigner();
@@ -35,7 +32,7 @@ const EcRecover = () => {
     }
   }, []);
 
-  const onSubmit = (form: { to?: string; value?: BigNumberish; message?: string }) => {
+  const onSubmit = (form: { to?: string; value?: string; message?: string }) => {
     signer?.sendTransaction({
       to: form.to,
       value: ethers.utils.parseEther(form.value || '0'),
