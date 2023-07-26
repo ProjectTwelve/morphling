@@ -87,8 +87,8 @@ const SignTypedData = () => {
           placeholder="chainId"
           {...form.getInputProps('chainId')}
           data={[
-            { value: 4, label: 'Rinkeby(4)' },
-            { value: 44010, label: 'p12TestNet(44010)' },
+            { value: "4", label: 'Rinkeby(4)' },
+            { value: "44010", label: 'p12TestNet(44010)' },
           ]}
         />
         <Select
@@ -97,8 +97,8 @@ const SignTypedData = () => {
           placeholder="intent"
           {...form.getInputProps('intent')}
           data={[
-            { value: 1, label: 'Sell' },
-            { value: 2, label: 'Buy' },
+            { value: "1", label: 'Sell' },
+            { value: "2", label: 'Buy' },
           ]}
         />
         <Select
@@ -106,8 +106,8 @@ const SignTypedData = () => {
           label="delegateType"
           {...form.getInputProps('delegateType')}
           data={[
-            { value: 1, label: 'ERC1155' },
-            { value: 2, label: 'ERC721' },
+            { value: "1", label: 'ERC1155' },
+            { value: "2", label: 'ERC721' },
           ]}
         />
         <TextInput label="deadline" {...form.getInputProps('deadline')} />

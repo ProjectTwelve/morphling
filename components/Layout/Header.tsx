@@ -1,5 +1,5 @@
 import { useAccount, useConnect } from 'wagmi';
-import { InjectedConnector } from '@wagmi/core';
+import { InjectedConnector } from 'wagmi/connectors/injected';
 import { Button } from '@mantine/core';
 import { useIsMounted } from '../../hooks/useIsMounted';
 import { shortenAddress } from '../../utils';
