@@ -13,7 +13,7 @@ const Faucet = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const [info, setInfo] = useSetState<{ chainId: number; tokenAddr: string }>({
-    chainId: 44010,
+    chainId: 248832,
     tokenAddr: ethers.constants.AddressZero,
   });
 
@@ -32,6 +32,7 @@ const Faucet = () => {
       setTxHash(res?.data?.txHash);
     } catch (e) {
       alert('request fail');
+      console.log(e);
       setLoading(false);
     }
     setLoading(false);
@@ -67,7 +68,8 @@ const Faucet = () => {
           value={info.chainId.toString()}
           data={[
             { value: '5', label: 'Goerli' },
-            { value: '44010', label: 'P12TestNet' },
+            { value: '20736', label: 'P12 Chain Pudge' },
+            { value: '248832', label: 'P12 Chain Butcher' },
           ]}
           onChange={(v) => {
             setInfo({ chainId: Number(v) });
